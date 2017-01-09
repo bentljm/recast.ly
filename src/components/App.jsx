@@ -4,32 +4,51 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      videos: null,
-      video: null
+      videos: window.exampleVideoData,
+      video: window.exampleVideoData[0]
     };
+
   }
 
-  onClick(videoObj) {
+  componentDidMount() {
+    this.getVideos('cute kittens');
+  }
+
+  getVideos(query) {
+    var options = {
+      key: this.props.API_KEY,
+      query: query
+    };
+
+    this.props.searchYouTube(options, (videos) => {
+      this.setState({
+        videos: videos,
+        video: videos[0]
+      });
+    });
+  }
+
+  setSomething(videoObj) {
     this.setState({
       video: videoObj
     });
   }
 
-
-  render() {
+  render () {
     return (
       <div>
-        <Nav />
+        <Nav getVideos={this.getVideos.bind(this)}/>
         <div className="col-md-7">
-        <VideoPlayer video={exampleVideoData[0]}/>
+        <VideoPlayer video={this.state.video}/>
         </div>
         <div className="col-md-5">
-        <VideoList videos={exampleVideoData}/>
+        <VideoList videos={this.state.videos} setSomething={this.setSomething.bind(this)}/>
         </div>
       </div>
     );
   }
 }
+
 
 
 
